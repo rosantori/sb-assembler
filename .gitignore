@@ -1,0 +1,8 @@
+*.asm
+*.pre
+*.obj
+!examples/*.asm
+!examples/*.pre
+!examples/*.obj
+build/
+montador
