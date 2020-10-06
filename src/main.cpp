@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include "pre.h"
+#include "assembler.h"
 
 using std::cout;
 using std::endl;
@@ -26,9 +27,16 @@ int main(int argc, char *argv[]) {
             break;
         name+=fileName.at(i);
     }
-
-    if (pre(name)) cout << "PRE OKAY!\n";
-    if (argv[1][1]=='o'); //COMPILA -> Deleta o .pre depois e deixa só o .obj
+    if(argv[1][1] == 'p')
+    {
+        if (pre(name))
+            cout << "PRE OKAY!\n";
+    }
+    else if (argv[1][1]=='o') //COMPILA -> Deleta o .pre depois e deixa só o .obj
+    {
+        if(assembler(name))
+            cout << "ASSEMBLER OKAY!\n";
+    }
     return 0;
 }
 

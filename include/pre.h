@@ -5,24 +5,20 @@
 */
 #pragma once
 
-#define PRE_SECTION     1
-#define SECTION_DATA    2
-#define SECTION_TEXT    3
-
-#define MACRO       4
-#define EQU         5
-#define IF          6
-#define LABEL       7
-#define ENDMACRO    8
-
-#define LINE_BREAK  true
-
-#define FALSE 0
-
 #include <string>
 
 using std::string;
 
+enum
+{
+    LINE_BREAK = 1,
+    PRE_SECTION, SECTION_DATA, SECTION_TEXT,
+    MACRO, EQU, IF, LABEL, ENDMACRO,
+};
+
+
+//  Returns if the token is a token of pre process stage
 int whichPreToken(string); 
 
+// Pre processes the file .asm, returns true for success and false otherwise
 bool pre(string);

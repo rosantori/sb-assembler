@@ -7,7 +7,7 @@ using std::endl;
 vector<string> checkLine (string line)
 {
     vector <string> tokens;
-    string token = "";
+    string token;
     char c;
 
     for( u_int i = 0; i < line.length(); )
@@ -17,8 +17,19 @@ vector<string> checkLine (string line)
         {   
             c = line.at(i);
             c = toupper(c);
-            if (c != ' ')
+            
+            // Ignore the char if is SPACE, HT, LF, CR or ';'
+            if (c != ' ' && c!= 9 && c != 10 && c != 13 && c!= ';')
                 token+=c;
+            
+            // If the char is ';', ignore the rest of the line because it is a comment
+            if(c == ';')
+            {
+                if (tokens.size())
+                    tokens.push_back(token);
+                return tokens;
+            }
+
             i++;
         }
         while (c != ' ' && i < line.length());
@@ -31,8 +42,7 @@ vector<string> checkLine (string line)
             continue;
 
         }
-        if(token.at(0) == ';')
-            return tokens;
+
         tokens.push_back(token);
     }
 

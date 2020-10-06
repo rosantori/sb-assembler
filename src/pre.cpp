@@ -52,7 +52,7 @@ bool pre(string fileName)
     while(!file.eof())
     {
         tokens = nextLine(file);
-        if(!tokens.size())
+        if(file.eof())
             break;
         
         //Substitute the EQs
@@ -77,7 +77,10 @@ bool pre(string fileName)
         {   
             if(!tokens[0].compare("SECTION")) // Finding SECTION TEXT
             {
-                //cout << "AHCEIEIEIEIEEI SECTION!\n";
+                #if DEBUG
+                cout << "Found SECTION TEXT\n";
+                #endif
+
                 stage = SECTION_TEXT;
                 preFile << newLine(tokens, LINE_BREAK);
                 continue;
@@ -85,11 +88,12 @@ bool pre(string fileName)
 
             if(tokens[0].rfind(":") != string::npos)
             {
-                string label = "";
-                for(u_int i=0; i < tokens[0].size()-1; i++)
-                    label+=tokens[0].at(i);
+                string label = tokens[0].substr(0, tokens[0].size()-1);
 
-                //cout << "ESSE TOKEN É UM RÓTULO!! -> "<< label <<endl;
+                #if DEBUG
+                cout << "This token is a label -> "<< label <<endl;
+                #endif
+
                 vector<string> fullInst;
                 switch(whichPreToken(tokens[1]))
                 {
@@ -101,7 +105,6 @@ bool pre(string fileName)
                         break;
                     case MACRO:
                         cout << "ERROR! \""<< newLine(tokens,0) << "\" MACROs must be at SECTION TEXT!\n";
-                        initializeMacro(file, tokens, label, table_mnt, table_mdt);
                         break;
                     default:
                         break;
@@ -114,7 +117,10 @@ bool pre(string fileName)
         {
             if(!tokens[0].compare("SECTION")) // Finding SECTION TEXT
             {
-                //cout << "ACHEI SECTION!!\n";
+                #if DEBUG
+                cout << "Found SECTION DATA\n";
+                #endif
+
                 stage = SECTION_DATA;
                 preFile << newLine(tokens, LINE_BREAK);
                 continue;
@@ -128,11 +134,12 @@ bool pre(string fileName)
 
             if(tokens[0].rfind(":") != string::npos)
             {
-                string label = "";
-                for(u_int i=0; i < tokens[0].size()-1; i++)
-                    label+=tokens[0].at(i);
+                string label = tokens[0].substr(0, tokens[0].size()-1);
 
-                //cout << "ESSE TOKEN É UM RÓTULO!! -> "<< label <<endl;
+                #if DEBUG
+                cout << "This token is a label -> "<< label <<endl;
+                #endif
+                
                 vector<string> fullInst;
                 switch(whichPreToken(tokens[1]))
                 {
@@ -143,11 +150,26 @@ bool pre(string fileName)
                         cout << "ERROR! \""<< newLine(tokens, 0) << "\" EQUs must be outside the SECTIONS\n";
                         break;
                     case MACRO:
+                        #if DEBUG
+                        cout << "MACRO found! Initializing " << label << endl;
+                        #endif
+
                         initializeMacro(file, tokens, label, table_mnt, table_mdt);
+
+                        #if DEBUG
+                        cout << "Finished " << label << endl;
+                        #endif
+
                         break;
                     default:
                         if (table_mnt.count(tokens[1]))
+                        {
+                            #if DEBUG
+                            cout << "Running macro " << tokens[1] << endl;
+                            #endif
+
                             runMacro(preFile, tokens, table_mnt, table_mdt);
+                        }
                         else
                             preFile << newLine(tokens, LINE_BREAK);
                         break;
@@ -157,6 +179,10 @@ bool pre(string fileName)
             }
             else if(table_mnt.count(tokens[0]) )
             {
+
+                #if DEBUG
+                cout << "Running macro " << tokens[0] << endl;
+                #endif
                 runMacro(preFile, tokens, table_mnt, table_mdt);
                 continue;
             }
@@ -166,10 +192,12 @@ bool pre(string fileName)
         else if (stage == SECTION_DATA)
             preFile << newLine(tokens, LINE_BREAK);
 
-        /*cout << "TOKENS> /";
+        #if DEBUG
+        cout << "Line > /";
         for (u_int i = 0; i < tokens.size() ; i ++)
             cout << tokens[i] << '/';
-        cout << endl;*/
+        cout << endl;
+        #endif
     }
 
     file.close();
