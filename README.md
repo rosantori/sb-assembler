@@ -69,7 +69,7 @@ $  ./montador -p path/to/file.asm
 Para a opcao de montagem
 
 ```
-$ ./montador - o path/to/file.pre
+$ ./montador -o path/to/file.pre
 ```
 
     Observacao: o caminho para o arquivo de entrada pode ser o relativo ou o absoluto e o arquivo de saida sera gerado com o mesmo caminho.
