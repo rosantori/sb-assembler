@@ -80,8 +80,9 @@ void runMacro(ofstream& preFile, vector<string> tokens, map<string, int>& table_
 
     string name = tokens[0];
     tokens.erase(tokens.begin());
+    int size = tokens.size();
 
-    if( (tokens.size()) != table_mnt.at(name))
+    if( size != table_mnt.at(name))
     {
         cout << "Incorrect number of MACRO arguments" << endl;
         return;
