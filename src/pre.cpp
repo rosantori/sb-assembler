@@ -21,24 +21,24 @@ int whichPreToken(string token)
     return 0;
 }
 
-bool pre(string fileName) 
+bool pre(string fileName, string name ) 
 {
     int stage = PRE_SECTION; 
     ifstream file;
     ofstream preFile;
     string line;
 
-    file.open(fileName+".asm");
+    file.open(fileName);
     if(!file.is_open()) 
     {
-        cout << "Error! CANNOT OPEN " << fileName+".asm" << endl;
+        cout << "Error! CANNOT OPEN " << fileName << endl;
         return false;
     }
 
-    preFile.open(fileName+".pre");
+    preFile.open(name +".pre");
     if(!preFile.is_open())
     {
-        cout << "Error! CANNOT CREATE " << fileName+".pre" <<endl;
+        cout << "Error! CANNOT CREATE " << name +".pre" <<endl;
         return false;
     }
 

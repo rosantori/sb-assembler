@@ -21,4 +21,4 @@ enum
 int whichPreToken(string); 
 
 // Pre processes the file .asm, returns true for success and false otherwise
-bool pre(string);
+bool pre(string, string);

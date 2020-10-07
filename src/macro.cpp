@@ -2,6 +2,7 @@
 #include "file.h"
 #include "pre.h"
 #include <iostream>
+#include <list>
 
 using std::cout;
 using std::endl;
@@ -97,15 +98,21 @@ void runMacro(ofstream& preFile, vector<string> tokens, map<string, int>& table_
         }
     
     vector<string> fullInst = table_mdt.at(name);
-
     for(u_int i = 0; i < fullInst.size(); i++)
     {
         tokens = checkLine(fullInst[i]);
         for(u_int j = 0; j < tokens.size(); j++)
         {
-            if (tokens[j].c_str()[0] == '#')
+            if(tokens[0].rfind(':') != string::npos)
+            {
+                preFile << tokens[0]+" ";
+                tokens.erase(tokens.begin());
+                j=0;
+            }
+            if (tokens[j][0] == '#')
                 tokens[j] = args[stoi(tokens[j].substr(1, tokens[j].size()-1))];
-            if( j!= 0 && j < tokens.size()-1)
+
+            if( j!= 0 && j < tokens.size()-1 )
                tokens[j] += ",";
         }
         preFile << newLine(tokens, LINE_BREAK);

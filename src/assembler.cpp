@@ -29,15 +29,15 @@ void initializeInsts(map <string, Inst > &table_insts)
     return;
 }
 
-bool assembler(string fileName)
+bool assembler (string fileName, string name)
 {
     ifstream file;
     ofstream objFile;
 
-    file.open(fileName+".pre");
+    file.open(fileName);
     if(!file.is_open()) 
     {
-        cout << "Error! CANNOT OPEN " << fileName+".pre" << endl;
+        cout << "Error! CANNOT OPEN " << fileName << endl;
         return false;
     }
 
@@ -78,8 +78,13 @@ bool assembler(string fileName)
             continue;
         }
 
-        if (!SECTION_DATA) 
-            addr += (table_insts.at(tokens[0])).getSize();
+        if (!SECTION_DATA)
+        {
+            if(table_insts.count(tokens[0]))
+                addr += (table_insts.at(tokens[0])).getSize();
+            else 
+            cout << "The inst \"" << tokens[0] << "\" does not exist.\n";
+        }
         else 
             addr++;
         #if DEBUG
@@ -104,10 +109,10 @@ bool assembler(string fileName)
     int size;
     string code;
 
-    objFile.open(fileName+".obj");
+    objFile.open(name+".obj");
     if(!objFile.is_open())
     {
-        cout << "Error! CANNOT CREATE " << fileName+".obj" <<endl;
+        cout << "Error! CANNOT CREATE " << name+".obj" <<endl;
         return false;
     }
 
@@ -145,7 +150,17 @@ bool assembler(string fileName)
                 if(tokens[i].rfind(',') != string::npos)
                     tokens[i] = tokens[i].substr(0, tokens[i].size()-1);
 
-                tokens[i] = table_labels.at(tokens[i]);
+                if (!table_labels.count(tokens[i]))
+                {
+                    cout << "The token \'"+tokens[i]+"\' is invalid.\n";
+                    objFile.close();
+                    file.close();
+                    return false;
+                }
+                tokens[i] = std::to_string(table_labels.at(tokens[i]));
+                #if DEBUG
+                cout << "The token is : " << tokens[i] << endl;
+                #endif
                 objFile << tokens[i] + " ";
             }
             continue;

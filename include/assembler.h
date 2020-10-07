@@ -11,4 +11,4 @@ using std::string;
 using std::map;
 
 void initializeInsts(map<string, Inst>&);
-bool assembler(string);
+bool assembler(string, string);
