@@ -4,14 +4,10 @@
 #include <iostream>
 #include <list>
 
-using std::cout;
-using std::endl;
-using std::map;
-
-void initializeMacro(ifstream& file, vector<string> tokens, string name, map<string,int> &table_mnt, map<string,vector<string>> &table_mdt)
+void initializeMacro(std::ifstream& file, std::vector<std::string> tokens, std::string name, std::map<std::string,int> &table_mnt, std::map<std::string,std::vector<std::string>> &table_mdt)
 {
-    vector<string> fullInst;
-    map<string, string> argsMacro;
+    std::vector<std::string> fullInst;
+    std::map<std::string, std::string> argsMacro;
     //flag args is set to tell if the args are valid
     bool args = true;
 
@@ -24,23 +20,23 @@ void initializeMacro(ifstream& file, vector<string> tokens, string name, map<str
     {
         for(u_int i=0; i<tokens.size(); i++)
         {
-            if(tokens[i].rfind(',') != string::npos)
+            if(tokens[i].rfind(',') != std::string::npos)
                 tokens[i] = tokens[i].substr(0, tokens[i].size()-1);
             //Quick check if they really are arguments
             if(tokens[i].at(0) != '&' || tokens[i].size() < 2)
             {    
-                cout << "ERROR! token: \""<< tokens[i]<< "\" na linha \"" << newLine(tokens, 0) <<"\" deve ser argumento de macro\n";
+                std::cout << "ERROR! token: \""<< tokens[i]<< "\" na linha \"" << newLine(tokens, 0) <<"\" deve ser argumento de macro\n";
                 args=false;
                 continue;
             }
-            argsMacro.insert(std::pair<string,string>(tokens[i], std::to_string(i)));
+            argsMacro.insert(std::pair<std::string,std::string>(tokens[i], std::to_string(i)));
         }
     }
     
     if(!args)
-        cout << "Há argumentos inválidos na MACRO: \"" << name <<"\" .\n";
+        std::cout << "Há argumentos inválidos na MACRO: \"" << name <<"\" .\n";
     else
-        table_mnt.insert(std::pair<string,int>(name, tokens.size()));
+        table_mnt.insert(std::pair<std::string,int>(name, tokens.size()));
 
     while(!file.eof())
     {
@@ -50,7 +46,7 @@ void initializeMacro(ifstream& file, vector<string> tokens, string name, map<str
 
         for(u_int i=0; i < tokens.size(); i++)
         {
-            if(tokens[i].rfind(',') != string::npos)
+            if(tokens[i].rfind(',') != std::string::npos)
                 tokens[i] = tokens[i].substr(0, tokens[i].size()-1);
             if(argsMacro.count(tokens[i]))
                 tokens[i] = "#"+ argsMacro.at(tokens[i]);
@@ -58,18 +54,18 @@ void initializeMacro(ifstream& file, vector<string> tokens, string name, map<str
         fullInst.emplace_back(newLine(tokens,0));
 
         #if DEBUG
-        cout << newLine(tokens, LINE_BREAK);
+        std::cout << newLine(tokens, LINE_BREAK);
         #endif
 
     }
     
-    table_mdt.insert(std::pair<string, vector<string>>(name, fullInst));
+    table_mdt.insert(std::pair<std::string, std::vector<std::string>>(name, fullInst));
    
     return;
 
 }
 
-void runMacro(ofstream& preFile, vector<string> tokens, map<string, int>& table_mnt, map<string,vector<string>>& table_mdt)
+void runMacro(std::ofstream& preFile, std::vector<std::string> tokens, std::map<std::string, int>& table_mnt, std::map<std::string,std::vector<std::string>>& table_mdt)
 {
     //If the first token is not the name of the macro, it must be a label and the name of the macro is the second token
     if (!table_mnt.count(tokens[0]))
@@ -78,33 +74,33 @@ void runMacro(ofstream& preFile, vector<string> tokens, map<string, int>& table_
         tokens.erase(tokens.begin());
     }
 
-    string name = tokens[0];
+    std::string name = tokens[0];
     tokens.erase(tokens.begin());
     int size = tokens.size();
 
     if( size != table_mnt.at(name))
     {
-        cout << "Incorrect number of MACRO arguments" << endl;
+        std::cout << "Incorrect number of MACRO arguments" << std::endl;
         return;
     }
 
-    vector<string> args;
+    std::vector<std::string> args;
 
     if(!tokens.empty())
         for (u_int i = 0; i <tokens.size(); i ++)
         {
-            if(tokens[i].rfind(',') != string::npos)
+            if(tokens[i].rfind(',') != std::string::npos)
                 tokens[i] = tokens[i].substr(0, tokens[i].size() - 1);
             args.emplace_back(tokens[i]);
         }
     
-    vector<string> fullInst = table_mdt.at(name);
+    std::vector<std::string> fullInst = table_mdt.at(name);
     for(u_int i = 0; i < fullInst.size(); i++)
     {
         tokens = checkLine(fullInst[i]);
         for(u_int j = 0; j < tokens.size(); j++)
         {
-            if(tokens[0].rfind(':') != string::npos)
+            if(tokens[0].rfind(':') != std::string::npos)
             {
                 preFile << tokens[0]+" ";
                 tokens.erase(tokens.begin());

@@ -4,12 +4,9 @@
     3 - Expand MACROS
 */
 #pragma once
-
 #include <string>
 
-using std::string;
-
-enum
+enum 
 {
     LINE_BREAK = 1,
     PRE_SECTION, SECTION_DATA, SECTION_TEXT,
@@ -18,7 +15,7 @@ enum
 
 
 //  Returns if the token is a token of pre process stage
-int whichPreToken(string); 
+int whichPreToken(std::string); 
 
 // Pre processes the file .asm, returns true for success and false otherwise
-bool pre(string, string);
+bool pre(std::string, std::string);

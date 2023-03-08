@@ -1,11 +1,11 @@
 #include "Inst.h"
 
-Inst::Inst(string code, int size){
+Inst::Inst(std::string code, int size){
     this->size = size;
     this->code = code;
 }
 
-string Inst::getCode()
+std::string Inst::getCode()
 {
     return code;
 }

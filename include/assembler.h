@@ -7,8 +7,5 @@
 #define FIRST_STEP   1
 #define SECOND_STEP  2
 
-using std::string;
-using std::map;
-
-void initializeInsts(map<string, Inst>&);
-bool assembler(string, string);
+void initializeInsts(std::map<std::string, Inst>&);
+bool assembler(std::string, std::string);

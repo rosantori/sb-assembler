@@ -6,11 +6,7 @@
 #include <iostream>
 #include <vector>
 
-using std::cout;
-using std::endl;
-using std::ofstream;
-
-int whichPreToken(string token) 
+int whichPreToken(std::string token) 
 {
     if(!token.compare("MACRO"))
         return MACRO;
@@ -21,33 +17,33 @@ int whichPreToken(string token)
     return 0;
 }
 
-bool pre(string fileName, string name ) 
+bool pre(std::string fileName, std::string name ) 
 {
     int stage = PRE_SECTION; 
-    ifstream file;
-    ofstream preFile;
-    string line;
+    std::ifstream file;
+    std::ofstream preFile;
+    std::string line;
 
     file.open(fileName);
     if(!file.is_open()) 
     {
-        cout << "Error! CANNOT OPEN " << fileName << endl;
+        std::cout << "Error! CANNOT OPEN " << fileName << std::endl;
         return false;
     }
 
     preFile.open(name +".pre");
     if(!preFile.is_open())
     {
-        cout << "Error! CANNOT CREATE " << name +".pre" <<endl;
+        std::cout << "Error! CANNOT CREATE " << name +".pre" <<std::endl;
         return false;
     }
 
-    vector<string> tokens;
+    std::vector<std::string> tokens;
 
-    map<string, int> table_mnt;
-    map<string, vector<string>> table_mdt;
+    std::map<std::string, int> table_mnt;
+    std::map<std::string, std::vector<std::string>> table_mdt;
 
-    map<string,string> table_equ;
+    std::map<std::string,std::string> table_equ;
 
     while(!file.eof())
     {
@@ -78,7 +74,7 @@ bool pre(string fileName, string name )
             if(!tokens[0].compare("SECTION")) // Finding SECTION TEXT
             {
                 #if DEBUG
-                cout << "Found SECTION TEXT\n";
+                std::cout << "Found SECTION TEXT\n";
                 #endif
 
                 stage = SECTION_TEXT;
@@ -86,25 +82,25 @@ bool pre(string fileName, string name )
                 continue;
             }
 
-            if(tokens[0].rfind(":") != string::npos)
+            if(tokens[0].rfind(":") != std::string::npos)
             {
-                string label = tokens[0].substr(0, tokens[0].size()-1);
+                std::string label = tokens[0].substr(0, tokens[0].size()-1);
 
                 #if DEBUG
-                cout << "This token is a label -> "<< label <<endl;
+                std::cout << "This token is a label -> "<< label <<std::endl;
                 #endif
 
-                vector<string> fullInst;
+                std::vector<std::string> fullInst;
                 switch(whichPreToken(tokens[1]))
                 {
                     case IF:
-                        cout << "ERROR!  \""<< newLine(tokens, 0) << "\" IFs must be in a SECTION\n";
+                        std::cout << "ERROR!  \""<< newLine(tokens, 0) << "\" IFs must be in a SECTION\n";
                         break;
                     case EQU:
-                        table_equ.insert(std::pair<string,string>(label, tokens[2]));
+                        table_equ.insert(std::pair<std::string,std::string>(label, tokens[2]));
                         break;
                     case MACRO:
-                        cout << "ERROR! \""<< newLine(tokens,0) << "\" MACROs must be at SECTION TEXT!\n";
+                        std::cout << "ERROR! \""<< newLine(tokens,0) << "\" MACROs must be at SECTION TEXT!\n";
                         break;
                     default:
                         break;
@@ -118,7 +114,7 @@ bool pre(string fileName, string name )
             if(!tokens[0].compare("SECTION")) // Finding SECTION TEXT
             {
                 #if DEBUG
-                cout << "Found SECTION DATA\n";
+                std::cout << "Found SECTION DATA\n";
                 #endif
 
                 stage = SECTION_DATA;
@@ -132,32 +128,32 @@ bool pre(string fileName, string name )
                     tokens[i] = table_equ.at(tokens[i]);
             }
 
-            if(tokens[0].rfind(":") != string::npos)
+            if(tokens[0].rfind(":") != std::string::npos)
             {
-                string label = tokens[0].substr(0, tokens[0].size()-1);
+                std::string label = tokens[0].substr(0, tokens[0].size()-1);
 
                 #if DEBUG
-                cout << "This token is a label -> "<< label <<endl;
+                std::cout << "This token is a label -> "<< label <<std::endl;
                 #endif
                 
-                vector<string> fullInst;
+                std::vector<std::string> fullInst;
                 switch(whichPreToken(tokens[1]))
                 {
                     case IF:    
-                        cout << "ERROR! It is not possible to have IF at \""<< newLine(tokens, 0) << "\" \n";
+                        std::cout << "ERROR! It is not possible to have IF at \""<< newLine(tokens, 0) << "\" \n";
                         break;
                     case EQU:
-                        cout << "ERROR! \""<< newLine(tokens, 0) << "\" EQUs must be outside the SECTIONS\n";
+                        std::cout << "ERROR! \""<< newLine(tokens, 0) << "\" EQUs must be outside the SECTIONS\n";
                         break;
                     case MACRO:
                         #if DEBUG
-                        cout << "MACRO found! Initializing " << label << endl;
+                        std::cout << "MACRO found! Initializing " << label << std::endl;
                         #endif
 
                         initializeMacro(file, tokens, label, table_mnt, table_mdt);
 
                         #if DEBUG
-                        cout << "Finished " << label << endl;
+                        std::cout << "Finished " << label << std::endl;
                         #endif
 
                         break;
@@ -165,7 +161,7 @@ bool pre(string fileName, string name )
                         if (table_mnt.count(tokens[1]))
                         {
                             #if DEBUG
-                            cout << "Running macro " << tokens[1] << endl;
+                            std::cout << "Running macro " << tokens[1] << std::endl;
                             #endif
 
                             runMacro(preFile, tokens, table_mnt, table_mdt);
@@ -181,7 +177,7 @@ bool pre(string fileName, string name )
             {
 
                 #if DEBUG
-                cout << "Running macro " << tokens[0] << endl;
+                std::cout << "Running macro " << tokens[0] << std::endl;
                 #endif
                 runMacro(preFile, tokens, table_mnt, table_mdt);
                 continue;
@@ -193,10 +189,10 @@ bool pre(string fileName, string name )
             preFile << newLine(tokens, LINE_BREAK);
 
         #if DEBUG
-        cout << "Line > /";
+        std::cout << "Line > /";
         for (u_int i = 0; i < tokens.size() ; i ++)
-            cout << tokens[i] << '/';
-        cout << endl;
+            std::cout << tokens[i] << '/';
+        std::cout << std::endl;
         #endif
     }
 

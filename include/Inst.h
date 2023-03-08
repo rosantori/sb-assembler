@@ -1,17 +1,14 @@
 #pragma once
-
 #include <string>
-
-using std::string;
 
 class Inst
 {
-    public:
-        Inst(string, int);
-        string getCode();
-        int getSize();
+public:
+    Inst(std::string, int);
+    std::string getCode();
+    int getSize();
 
-    protected:
-        string code;
-        int size;
+protected:
+    std::string code;
+    int size;
 };

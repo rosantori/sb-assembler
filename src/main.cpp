@@ -3,6 +3,7 @@
 #include "pre.h"
 #include "assembler.h"
 
+using std::string;
 using std::cout;
 using std::endl;
 
@@ -17,7 +18,7 @@ int main(int argc, char *argv[])
     }
     
     string mode(argv[1]);
-    string fileName(argv[2]);
+    std::string fileName(argv[2]);
     
     if((mode.compare ("-p") && mode.compare("-o")) ||
         (!mode.compare("-p") && fileName.find(".asm") == string::npos && fileName.find(".ASM") == string::npos) || 

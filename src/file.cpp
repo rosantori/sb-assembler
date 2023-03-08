@@ -1,13 +1,10 @@
 #include "file.h"
 #include <iostream>
 
-using std::cout;
-using std::endl;
-
-vector<string> checkLine (string line)
+std::vector<std::string> checkLine (std::string line)
 {
-    vector <string> tokens;
-    string token;
+    std::vector <std::string> tokens;
+    std::string token;
     char c;
 
     for( u_int i = 0; i < line.length(); )
@@ -38,7 +35,7 @@ vector<string> checkLine (string line)
             continue; 
         if(token == ",")
         {
-            cout << "Error! The line \"" << line << "\" contains an invalid token \",\". It is going to be ignored." << std::endl;
+            std::cout << "Error! The line \"" << line << "\" contains an invalid token \",\". It is going to be ignored." << std::endl;
             continue;
 
         }
@@ -50,20 +47,20 @@ vector<string> checkLine (string line)
 
 }
 
-vector<string> nextLine(ifstream& file)
+std::vector<std::string> nextLine(std::ifstream& file)
 {
-    string line;
+    std::string line;
     bool flag=false;
-    vector<string> tokens;
+    std::vector<std::string> tokens;
     do
     {
         getline(file, line);
         tokens = checkLine(line);
         flag = (tokens.size()!= 0); 
         //If it's a label alone in a line, finds the others tokens for it
-        if(flag && tokens[0].rfind(":") != string::npos && tokens.size() < 2)
+        if(flag && tokens[0].rfind(":") != std::string::npos && tokens.size() < 2)
         {   
-            string label = tokens[0];
+            std::string label = tokens[0];
             tokens = nextLine(file);
             tokens.emplace(tokens.begin(), label);
         }    
@@ -73,9 +70,9 @@ vector<string> nextLine(ifstream& file)
     return tokens;
 }
 
-string newLine(vector<string> tokens, bool lb)
+std::string newLine(std::vector<std::string> tokens, bool lb)
 {
-    string line = "";
+    std::string line = "";
     for (u_int i=0; i < tokens.size() - 1 ; i ++)
     {
         line+=tokens[i];
